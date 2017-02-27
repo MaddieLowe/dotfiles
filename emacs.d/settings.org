@@ -1,0 +1,265 @@
+* Look and feel configuration of the emacs application
+** Remove window tool bars, menus and scroll bars
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (menu-bar-mode -1))
+#+END_SRC
+
+
+** Update the window title bar
+#+BEGIN_SRC emacs-lisp
+(setq frame-title-format (list (format "%s %%S: %%j " (system-name)) '(buffer-file-name "%f" (dired-directory dired-directory "%b"))))
+#+END_SRC
+
+
+** Fonts and themes
+#+BEGIN_SRC emacs-lisp
+(use-package powerline
+             :config (powerline-center-theme)
+             :ensure t)
+#+END_SRC
+*** Incosolata falling back to DejaVu Sans Mono
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil
+                    :family "Inconsolata"
+                    :height 120
+                    :weight 'normal
+                    :width 'normal)
+(when (functionp 'set-fontset-font)
+  (set-fontset-font "fontset-default"
+                    'unicode
+                    (font-spec :family "DejaVu Sans Mono"
+                               :width 'normal
+                               :size 12
+                               :weight 'normal)))
+#+END_SRC
+*** Today's theme is sanityinc-tomorrow-eighties
+#+BEGIN_SRC emacs-lisp
+(use-package color-theme-sanityinc-tomorrow
+             :init (progn (load-theme 'sanityinc-tomorrow-eighties t))
+             :ensure t)
+#+END_SRC
+
+
+** Setup some zoom keybindings for larger displays and bad eyes
+#+BEGIN_SRC emacs-lisp
+(defun zoom-in-in ()
+  "Increase font size for 4k display and tired eyes"
+  (interactive)
+  (set-face-attribute 'default nil
+                      :height 180))
+(defun zoom-in ()
+  "Increase font size for 4k display"
+  (interactive)
+  (set-face-attribute 'default nil
+                      :height 160))
+(defun zoom-out ()
+  "Decrease font size for normal display"
+  (interactive)
+  (set-face-attribute 'default nil
+                      :height 120))
+
+(setq split-height-threshold nil)
+(setq split-width-threshold 999)
+(setq display-buffer-reuse-frames 't)
+
+(global-set-key (kbd "C-!") 'zoom-out)
+(global-set-key (kbd "C-@") 'zoom-in)
+(global-set-key (kbd "C-#") 'zoom-in-in)
+#+END_SRC
+
+
+** Do not make backup files
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files nil)
+#+END_SRC
+
+
+
+** General highlighting
+#+BEGIN_SRC emacs-lisp
+(setq-default show-trailing-whitespace 't)
+(setq-default truncate-lines t)
+(global-hl-line-mode t)
+(show-paren-mode t)
+(global-linum-mode t)
+#+END_SRC
+
+
+* Navigation
+** Buffer management
+Make identifying buffers easier by using uniquify to give unique names to buffers
+of files with duplicate names
+#+BEGIN_SRC emacs-lisp
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+#+END_SRC
+
+
+** Helm and helm plugin installations
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+             :config
+             (progn
+              (require 'helm-config)
+              (setq helm-candidate-number-limit 100)
+              (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+                    helm-input-idle-delay 0.01  ; this actually updates things relatively quickly.
+                    helm-quick-update t)
+              (helm-mode 1))
+             :ensure t)
+(use-package helm-ag :ensure t)
+#+END_SRC
+
+
+** Auto complete
+#+BEGIN_SRC emacs-lisp
+(use-package auto-complete
+             :config
+             (progn
+                 (require 'auto-complete-config)
+                 (add-to-list 'ac-dictionary-directories
+                              "~/.emacs.d/auto-complete-dict")
+                 (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
+                 (global-auto-complete-mode t)
+                 (setq ac-auto-start 2
+                       ac-ignore-case nil))
+             :ensure t)
+#+END_SRC
+
+
+** Finding files faster within a git repository
+#+BEGIN_SRC emacs-lisp
+(use-package find-file-in-repository
+             :bind ("C-x f" . find-file-in-repository)
+             :ensure t)
+#+END_SRC
+
+
+** Window navigation
+#+BEGIN_SRC emacs-lisp
+(global-set-key [C-left] 'windmove-left)          ; move to left window
+(global-set-key [C-right] 'windmove-right)        ; move to right window
+(global-set-key [C-up] 'windmove-up)              ; move to upper window
+(global-set-key [C-down] 'windmove-down)          ; move to downer window
+#+END_SRC
+
+
+** Code highlighting
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode 
+             :init (rainbow-mode)
+             :ensure t)
+#+END_SRC
+
+
+* Editing
+** Multiple cursors
+#+BEGIN_SRC emacs-lisp
+(use-package multiple-cursors
+             :bind (("C->" . mc/mark-next-like-this)
+                    ("C-<" . mc/mark-previous-like-this))
+             :ensure t)
+#+END_SRC
+
+
+** Default keybindings
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-/") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-;") 'find-file-at-point)
+#+END_SRC
+
+
+** Indentation and formating
+*** setup indenting size and replace tabs with spaces
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
+(setq c-mode-hook
+  (function (lambda ()
+  (setq indent-tabs-mode nil)
+  (setq c-basic-offset 4)
+  (setq c-indent-level 4))))
+(setq c++-mode-hook
+  (function (lambda ()
+  (setq indent-tabs-mode nil)
+  (setq c-basic-offset 4)
+  (setq c-indent-level 4))))
+#+END_SRC
+
+
+* Install and configure magit
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+             :bind ("C-x g" . magit-status)
+             :ensure t)
+(use-package magit-popup
+             :ensure t)
+#+END_SRC
+
+
+* Silver searcher with rgrep for backup
+#+BEGIN_SRC emacs-lisp
+(use-package ag
+             :init (setq ag-reuse-buffers 't)
+             :bind (("C-." . ag-project-regexp)
+                    ("C-:" . rgrep))
+             :ensure t)
+#+END_SRC
+
+
+* Javascript and web editing
+** Modes for editing
+#+BEGIN_SRC emacs-lisp
+(use-package ac-js2
+             :ensure t)
+(use-package js2-mode
+             :mode ("\\.js\\'" . js2-mode)
+             :config
+             (progn
+              (add-hook 'js-mode-hook 'js2-minor-mode)
+              (add-hook 'js2-mode-hook 'ac-js2-mode))
+             :ensure t)
+(use-package json-mode
+             :mode "\\.json\\'"
+             :config (setq js-indent-level 4)
+             :ensure t)
+(use-package less-css-mode
+             :mode "\\.less\\'"
+             :ensure t)
+(use-package web-mode
+             :config (setq web-mode-markup-indent-offset 2)
+             :mode (("\\.html\\'" . web-mode)
+                    ("\\.ejs\\'" . web-mode)
+                    ("\\.tpl\\'" . web-mode))
+             :ensure t)
+#+END_SRC
+
+
+* Flycheck mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+             :config
+             (progn
+              (add-hook 'after-init-hook #'global-flycheck-mode)
+              (setq-default flycheck-disabled-checkers
+                            (append flycheck-disabled-checkers
+                                    '(javascript-jshint)
+                                    '(json-jsonlist)))
+              (flycheck-add-mode 'javascript-eslint 'js2-mode))
+             :ensure t)
+#+END_SRC
+
+* Docker and Dockerfile modes
+#+BEGIN_SRC emacs-lisp
+(use-package docker
+             :ensure t)
+(use-package dockerfile-mode
+             :mode "Dockerfile.*\\'"
+             :ensure t)
+#+END_SRC
+
