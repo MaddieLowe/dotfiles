@@ -35,10 +35,10 @@
                                :size 12
                                :weight 'normal)))
 #+END_SRC
-*** Today's theme is sanityinc-tomorrow-eighties
+*** Today's theme is sanityinc-tomorrow-night
 #+BEGIN_SRC emacs-lisp
 (use-package color-theme-sanityinc-tomorrow
-             :init (progn (load-theme 'sanityinc-tomorrow-eighties t))
+             :init (progn (load-theme 'sanityinc-tomorrow-night t))
              :ensure t)
 #+END_SRC
 
@@ -88,6 +88,16 @@
 #+END_SRC
 
 
+** Git fringe
+#+BEGIN_SRC emacs-lisp
+(use-package git-gutter-fringe+
+             :init (global-git-gutter+-mode t)
+             :config (setq git-gutter-fr+-side 'right-fringe)
+             :diminish git-gutter+-mode
+             :ensure t)
+#+END_SRC
+
+
 * Navigation
 ** Buffer management
 Make identifying buffers easier by using uniquify to give unique names to buffers
@@ -109,8 +119,8 @@ of files with duplicate names
                     helm-input-idle-delay 0.01  ; this actually updates things relatively quickly.
                     helm-quick-update t)
               (helm-mode 1))
+             :diminish helm-mode
              :ensure t)
-(use-package helm-ag :ensure t)
 #+END_SRC
 
 
@@ -240,7 +250,6 @@ of files with duplicate names
 
 
 * Flycheck mode
-
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
              :config
@@ -251,8 +260,10 @@ of files with duplicate names
                                     '(javascript-jshint)
                                     '(json-jsonlist)))
               (flycheck-add-mode 'javascript-eslint 'js2-mode))
+             :diminish flycheck-mode
              :ensure t)
 #+END_SRC
+
 
 * Docker and Dockerfile modes
 #+BEGIN_SRC emacs-lisp

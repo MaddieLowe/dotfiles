@@ -1,6 +1,8 @@
-; Setup package repositories, install use-package if needed, and pull in
-; everyting else from the settings.org file
+;;; init.el --- Basic init file to setup repositorys and install use-package if needed
+;;; Commentary:
+; The remaining configuration is done in settings.org
 
+;;; Code:
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -15,8 +17,9 @@
 (eval-when-compile
   (require 'use-package))
 
+(require 'diminish)
 (require 'org)
 (org-babel-load-file
  (expand-file-name "settings.org"
                    user-emacs-directory))
-
+;;; init.el ends here
