@@ -17,7 +17,7 @@
 ** Fonts and themes
 #+BEGIN_SRC emacs-lisp
 (use-package powerline
-             :config (powerline-center-theme)
+             :config (powerline-default-theme)
              :ensure t)
 #+END_SRC
 *** Incosolata falling back to DejaVu Sans Mono
@@ -119,6 +119,7 @@ of files with duplicate names
              (progn
               (setq ivy-use-virtual-buffers t)
               (setq ivy-count-format "(%d/%d) ")
+              (setq ivy-wrap t)
               (ivy-mode 1))
              :ensure t)
 #+END_SRC
@@ -158,7 +159,7 @@ of files with duplicate names
 
 ** Code highlighting
 #+BEGIN_SRC emacs-lisp
-(use-package rainbow-mode 
+(use-package rainbow-mode
              :init (rainbow-mode)
              :ensure t)
 #+END_SRC
@@ -245,6 +246,31 @@ of files with duplicate names
              :mode (("\\.html\\'" . web-mode)
                     ("\\.ejs\\'" . web-mode)
                     ("\\.tpl\\'" . web-mode))
+             :ensure t)
+#+END_SRC
+
+
+* Markup language editing
+** Yaml
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+             :mode (("\\.yml\\'" . yaml-mode)
+                    ("\\.yaml\\'" . yaml-mode))
+             :ensure t)
+#+END_SRC
+
+** Asciidoc
+#+BEGIN_SRC emacs-lisp
+(use-package adoc-mode
+             :mode ("\\.adoc\\'" . adoc-mode)
+             :ensure t)
+#+END_SRC
+
+
+* Groovy for Jenkinsfiles
+#+BEGIN_SRC emacs-lisp
+(use-package groovy-mode
+             :mode "Jenkinsfile\\'"
              :ensure t)
 #+END_SRC
 
