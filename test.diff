@@ -1,0 +1,21 @@
+diff -r dotfiles/emacs.d/auto-save-list/.saves-17661-hobbit~ dotfiles.test/emacs.d/auto-save-list/.saves-17661-hobbit~
+1,4d0
+< /home/darryl/dotfiles.test/emacs.d/settings.org
+< /home/darryl/dotfiles.test/emacs.d/#settings.org#
+< /home/darryl/dotfiles.test/README.md
+< /home/darryl/dotfiles.test/#README.md#
+File dotfiles/emacs.d/elpa/gnupg/S.gpg-agent is a socket while file dotfiles.test/emacs.d/elpa/gnupg/S.gpg-agent is a socket
+diff -r dotfiles/emacs.d/settings.org dotfiles.test/emacs.d/settings.org
+109a110
+> ## some changes here
+141a143
+> ## some more changes here
+151c153
+< ** Window navigation
+---
+> ** navigation
+Binary files dotfiles/.git/index and dotfiles.test/.git/index differ
+diff -r dotfiles/README.md dotfiles.test/README.md
+1a2,3
+> 
+> Testing creating a diff file between two folders to see how github displays it
