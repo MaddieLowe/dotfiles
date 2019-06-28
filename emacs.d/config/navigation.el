@@ -1,3 +1,6 @@
+(use-package flx :ensure t)
+
+
 ;;; Counsel and ivy for completions
 (use-package counsel
   :diminish ivy-mode
@@ -6,6 +9,9 @@
          ("C-c k" . counsel-ag))
   :config
   (progn
+    (setq ivy-re-builders-alist
+          '((ivy-switch-buffer . ivy--regex-plus)
+            (t . ivy--regex-fuzzy)))
     (setq ivy-use-virtual-buffers t)
     (setq ivy-count-format "(%d/%d) ")
     (setq ivy-wrap t)
@@ -44,4 +50,8 @@
   :init (setq ag-reuse-buffers 't)
   :bind (("C-." . ag-project-regexp)
          ("C-:" . rgrep))
+  :ensure t)
+
+(use-package rg
+  :init (rg-enable-default-bindings)
   :ensure t)

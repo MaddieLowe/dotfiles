@@ -1,7 +1,33 @@
 ;;; Dracula theme
-(use-package dracula-theme
-  :init (progn (load-theme 'dracula t))
+;; (use-package dracula-theme
+;;   :init (progn (load-theme 'dracula t))
+;;   :ensure t)
+
+;; (use-package abyss-theme
+;;   :init (progn (load-theme 'abyss t))
+;;   :ensure t)
+
+;; (use-package apropospriate-theme
+;;   :init (progn (load-theme 'apropospriate-dark t))
+;;   :ensure t)
+
+;; (use-package boron-theme
+;;   :init (progn (load-theme 'boron t))
+;;   :ensure t)
+
+;; (use-package kooten-theme
+;;   :init (progn (load-theme 'kooten t))
+;;   :ensure t)
+
+;; (use-package molokai-theme
+;;   :init (progn (load-theme 'molokai t))
+;;   :ensure t)
+(use-package base16-theme
+  :init (progn (load-theme 'base16-chalk t))
   :ensure t)
+
+;; (add-to-list 'custom-theme-load-path (concat user-emacs-directory "themes"))
+;; (load-theme 'cyberpunk-2019 t)
 
 ;;; Remove window tool bars, menus and scroll bars
 (when (window-system)
@@ -50,7 +76,6 @@
   :config (powerline-default-theme)
   :ensure t)
 
-
 ;;; Font setup. HACK with fallback to Inconsolata
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
@@ -59,6 +84,20 @@
                     :weight 'normal
                     :width 'normal
                     :height 90)
+
+;; (set-face-attribute 'default nil
+;;                     :family "Space Mono"
+;;                     :weight 'normal
+;;                     :width 'normal
+;;                     :height 100)
+
+;; (custom-set-faces
+;;  '(font-lock-comment-face ((t (:slant italic))))
+;;  '(font-lock-keyword-face ((t (:slant italic))))
+;;  )
+
+;; (load-file (expand-file-name "config/fira.el" user-emacs-directory))
+
 
 (when (functionp 'set-fontset-font)
   (set-fontset-font "fontset-default"
@@ -77,3 +116,4 @@
                                :weight 'normal)
                     nil
                     'append))
+

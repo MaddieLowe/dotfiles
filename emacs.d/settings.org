@@ -7,6 +7,10 @@
   (menu-bar-mode -1))
 #+END_SRC
 
+** Prevent window splitting
+#+BEGIN_SRC emacs-lisp
+(setq pop-up-windows nil)
+#+END_SRC
 
 ** Update the window title bar
 #+BEGIN_SRC emacs-lisp
@@ -20,54 +24,118 @@
              :config (powerline-default-theme)
              :ensure t)
 #+END_SRC
-*** Incosolata falling back to DejaVu Sans Mono
+*** Fira Code falling back to Incosolata falling back to DejaVu Sans Mono
 #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil
-                    :family "Inconsolata"
-                    :height 120
-                    :weight 'normal
-                    :width 'normal)
-(when (functionp 'set-fontset-font)
-  (set-fontset-font "fontset-default"
-                    'unicode
-                    (font-spec :family "DejaVu Sans Mono"
-                               :width 'normal
-                               :size 12
-                               :weight 'normal)))
+  (set-language-environment "UTF-8")
+  (set-default-coding-systems 'utf-8)
+;;  (set-face-attribute 'default nil
+;;                      :family "Fira Code"
+;;                      :weight 'normal
+;;                      :width 'normal
+;;                      :height 90)
+  (set-face-attribute 'default nil
+                      :family "Hack"
+                      :weight 'normal
+                      :width 'normal
+                      :height 90)
+
+  (when (functionp 'set-fontset-font)
+    (set-fontset-font "fontset-default"
+                      'unicode
+                      (font-spec :family "Inconsolata"
+                                 :height 120
+                                 :weight 'normal
+                                 :width 'normal)))
+
+  (when (functionp 'set-fontset-font)
+    (set-fontset-font "fontset-default"
+                      'unicode
+                      (font-spec :family "DejaVu Sans Mono"
+                                 :width 'normal
+                                 :size 12
+                                 :weight 'normal)
+                      nil
+                      'append))
 #+END_SRC
 *** Today's theme is sanityinc-tomorrow-night
 #+BEGIN_SRC emacs-lisp
-(use-package color-theme-sanityinc-tomorrow
-             :init (progn (load-theme 'sanityinc-tomorrow-night t))
-             :ensure t)
+  ;; (use-package color-theme-sanityinc-tomorrow
+  ;;              :init (progn (load-theme 'sanityinc-tomorrow-night t))
+  ;;              :ensure t)
+  ;;
+  (use-package dracula-theme
+               :init (progn (load-theme 'dracula t))
+               :ensure t)
+   ;; (use-package soothe-theme
+   ;;              :init (progn (load-theme 'soothe t))
+   ;;              :ensure t)
 #+END_SRC
 
 
 ** Setup some zoom keybindings for larger displays and bad eyes
 #+BEGIN_SRC emacs-lisp
-(defun zoom-in-in ()
-  "Increase font size for 4k display and tired eyes"
-  (interactive)
-  (set-face-attribute 'default nil
-                      :height 180))
-(defun zoom-in ()
-  "Increase font size for 4k display"
-  (interactive)
-  (set-face-attribute 'default nil
-                      :height 160))
-(defun zoom-out ()
-  "Decrease font size for normal display"
-  (interactive)
-  (set-face-attribute 'default nil
-                      :height 120))
+  ;; Font size keybindings
+  (defun adjust-default-font-height (delta)
+    (let* ((old (face-attribute 'default :height))
+           (height (+ (face-attribute 'default :height) delta))
+           (points (/ height 10)))
+      (set-face-attribute 'default nil :height height)
+      (message "default font old %d new %d" old (face-attribute 'default :height))))
 
-(setq split-height-threshold nil)
-(setq split-width-threshold 999)
-(setq display-buffer-reuse-frames 't)
+  ;; (define-globalized-minor-mode
+  ;;   global-text-scale-mode
+  ;;   text-scale-mode
+  ;;   (lambda () (text-scale-mode 1)))
 
-(global-set-key (kbd "C-!") 'zoom-out)
-(global-set-key (kbd "C-@") 'zoom-in)
-(global-set-key (kbd "C-#") 'zoom-in-in)
+  ;; (defun global-text-scale-adjust (inc) (interactive)
+  ;;   (text-scale-set 1)
+  ;;   (kill-local-variable 'text-scale-mode-amount)
+  ;;   (setq-default text-scale-mode-amount (+ text-scale-mode-amount inc))
+  ;;   (global-text-scale-mode 1)
+  ;; )
+  (global-set-key (kbd "M-0")
+                  '(lambda () (interactive) (set-face-attribute 'default nil :height 90)))
+
+  (global-set-key (kbd "M-+")
+                  '(lambda () (interactive) (adjust-default-font-height +5)))
+
+  (global-set-key (kbd "M--")
+                  '(lambda () (interactive) (adjust-default-font-height -5)))
+
+  ;; (global-set-key (kbd "M-0")
+  ;;                 '(lambda () (interactive)
+  ;;                    (global-text-scale-adjust (- text-scale-mode-amount))
+  ;;                    (global-text-scale-mode -1)))
+
+  ;; (global-set-key (kbd "M-+")
+  ;;                 '(lambda () (interactive) (global-text-scale-adjust 1)))
+
+  ;; (global-set-key (kbd "M--")
+  ;;                 '(lambda () (interactive) (global-text-scale-adjust -1)))
+
+  ;; ;; (defun zoom-in-in ()
+  ;;   "Increase font size for 4k display and tired eyes"
+  ;;   (interactive)
+  ;;   (set-face-attribute 'default nil
+  ;;                       :height 160))
+  ;; (defun zoom-in ()
+  ;;   "Increase font size for 4k display"
+  ;;   (interactive)
+  ;;   (set-face-attribute 'default nil
+  ;;                       :height 120))
+  ;; (defun zoom-out ()
+  ;;   "Decrease font size for normal display"
+  ;;   (interactive)
+  ;;   (set-face-attribute 'default nil
+  ;;                       :height 90))
+  ;;
+  ;; (setq split-height-threshold nil)
+  ;; (setq split-width-threshold 999)
+  ;; (setq display-buffer-reuse-frames 't)
+  ;;
+  ;; (global-set-key (kbd "C-!") 'zoom-out)
+  ;; (global-set-key (kbd "C-@") 'zoom-in)
+  ;; (global-set-key (kbd "C-#") 'zoom-in-in)
 #+END_SRC
 
 
@@ -98,7 +166,95 @@
 #+END_SRC
 
 
+** Ansi colors
+#+BEGIN_SRC emacs-lisp
+(defun ansi-color-apply-on-region-int (beg end)
+  "interactive version of func"
+  (interactive "r")
+  (ansi-color-apply-on-region beg end))
+#+END_SRC
+
+
+* EMAIL
+#+BEGIN_SRC emacs-lisp
+(use-package wl
+  :init
+  (autoload 'wl "wl" "Wanderlust" t)
+  :config
+  (setq elmo-imap4-default-server "imap.gmail.com"
+        elmo-imap4-default-user "darryl@arterys.com"
+        elmo-imap4-default-authenticate-type 'clear
+        elmo-imap4-default-port '993
+        elmo-imap4-default-stream-type 'ssl
+        elmo-imap4-use-modified-utf7 t)
+  (setq wl-smtp-connection-type 'starttls
+        wl-smtp-posting-port 587
+        wl-smtp-authenticate-type "plain"
+        ;;wl-smtp-authenticate-type "login"
+        wl-smtp-posting-user "darryl"
+        wl-smtp-posting-server "smtp.gmail.com"
+        wl-local-domain "arterys.com"
+        wl-message-id-domain "smtp.gmail.com")
+  (setq wl-from "Darryl Bidulock <darryl@arterys.com>"
+
+        ;;all system folders (draft, trash, spam, etc) are placed in the
+        ;;[Gmail]-folder, except inbox. "%" means it's an IMAP-folder
+        wl-default-folder "%inbox"
+        wl-draft-folder   "%[Gmail]/Drafts"
+        wl-trash-folder   "%[Gmail]/Trash"
+        wl-fcc            "%[Gmail]/Sent"
+
+        ;; mark sent messages as read (sent messages get sent back to you and
+        ;; placed in the folder specified by wl-fcc)
+        wl-fcc-force-as-read    t
+
+        ;;for when auto-compleating foldernames
+        wl-default-spec "%"))
+(add-hook 'mime-view-mode-hook #'(lambda () (setq show-trailing-whitespace nil)))
+(provide 'plug/wanderlust)
+#+END_SRC
+
+
+* Calendar
+#+BEGIN_SRC emacs-lisp
+(use-package calfw
+  :init
+  (defun my-open-calendar ()
+    (interactive)
+    (cfw:open-calendar-buffer
+      :contents-sources
+      (list
+        (cfw:ical-create-source "gcal" "https://calendar.google.com/calendar/ical/darryl%40arterys.com/private-008d290c35b613381ebc09815063f4c5/basic.ics" "IndianRed")
+      )
+    )
+  )
+  :ensure t)
+
+(use-package calfw-ical :ensure t)
+#+END_SRC
+
+
 * Navigation
+** Projectile project management
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+             :config
+             (progn
+               (projectile-mode +1)
+               (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+               (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+             )
+             :ensure t)
+
+(use-package counsel-projectile
+             :config
+             (progn
+               (counsel-projectile-mode)
+             )
+             :ensure t)
+#+END_SRC
+
+
 ** Buffer management
 Make identifying buffers easier by using uniquify to give unique names to buffers
 of files with duplicate names
@@ -124,19 +280,51 @@ of files with duplicate names
              :ensure t)
 #+END_SRC
 
-** Auto complete
+** Swiper for better searching
 #+BEGIN_SRC emacs-lisp
-(use-package auto-complete
-             :config
-             (progn
-                 (require 'auto-complete-config)
-                 (add-to-list 'ac-dictionary-directories
-                              "~/.emacs.d/auto-complete-dict")
-                 (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
-                 (global-auto-complete-mode t)
-                 (setq ac-auto-start 2
-                       ac-ignore-case nil))
+(use-package swiper
+             :diminish ivy-mode
+             :bind (("C-s" . swiper)
+                    ("C-c C-r" . ivy-resume))
              :ensure t)
+#+END_SRC
+
+** Auto complete using company-mode
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :diminish company-mode
+  :bind (("C-<tab>" . company-complete-common)
+         :map company-mode-map
+         ([remap completion-at-point] . company-complete-common)
+         ([remap complete-symbol] . company-complete-common))
+  :init
+  (setf company-backends '((company-files
+                            company-keywords)
+                           (company-abbrev company-dabbrev)))
+  (setf company-idle-delay 0.5)
+  (setf company-tooltip-limit 10)
+  (setf company-minimum-prefix-length 1)
+  (setf company-echo-delay 0)
+  (add-hook 'after-init-hook #'global-company-mode))
+
+(use-package company-lsp
+  :ensure t
+  :init
+  (push 'company-lsp company-backends)
+  (setf company-lsp-async t))
+
+(use-package company-quickhelp
+  :ensure t
+  :defer t
+  :init (add-hook 'global-company-mode-hook #'company-quickhelp-mode))
+
+(use-package company-statistics
+  :ensure t
+  :after (company)
+  :init
+  (setf company-statistics-file "~/.company-statistics-cache.el")
+  (add-hook 'after-init-hook 'company-statistics-mode))
 #+END_SRC
 
 
@@ -170,7 +358,8 @@ of files with duplicate names
 #+BEGIN_SRC emacs-lisp
 (use-package multiple-cursors
              :bind (("C->" . mc/mark-next-like-this)
-                    ("C-<" . mc/mark-previous-like-this))
+                    ("C-<" . mc/mark-previous-like-this)
+                    ("C-S-<mouse-1>" . mc/add-cursor-on-click))
              :ensure t)
 #+END_SRC
 
@@ -201,13 +390,16 @@ of files with duplicate names
 #+END_SRC
 
 
-* Install and configure magit
+* Magit and other vc tools
 #+BEGIN_SRC emacs-lisp
 (use-package magit
              :bind ("C-x g" . magit-status)
              :config (setq magit-completing-read-function 'ivy-completing-read)
              :ensure t)
-(use-package magit-popup
+(use-package forge
+             :ensure t)
+(use-package browse-at-remote
+             :bind ("C-c g g" . browse-at-remote)
              :ensure t)
 #+END_SRC
 
@@ -222,31 +414,109 @@ of files with duplicate names
 #+END_SRC
 
 
-* Javascript and web editing
+* Typescript/Javascript and web editing
+** Indium development environment
+#+BEGIN_SRC emacs-lisp
+(use-package indium
+             :ensure t)
+#+END_SRC
+
 ** Modes for editing
 #+BEGIN_SRC emacs-lisp
-(use-package ac-js2
+  (use-package ac-js2
+               :ensure t)
+  (use-package tide
+    :ensure t
+    :after (typescript-mode company flycheck)
+    :hook ((typescript-mode . tide-setup)
+           (typescript-mode . tide-hl-identifier-mode)
+           (before-save . tide-format-before-save)))
+
+  (use-package js2-mode
+               :mode ("\\.js\\'" . js2-mode)
+               :config
+               (progn
+                (add-hook 'js-mode-hook 'js2-minor-mode)
+                (add-hook 'js2-mode-hook 'ac-js2-mode)
+                ;; (add-hook 'js-mode-hook #'lsp-typescrypt-enable)
+                ;; (add-hook 'js2-mode-hook #'lsp-typescrypt-enable))
+               :ensure t)
+
+  (use-package json-mode
+               :mode "\\.json\\'"
+               :config (setq js-indent-level 4)
+               :ensure t)
+  (use-package less-css-mode
+               :mode "\\.less\\'"
+               :ensure t)
+  (use-package web-mode
+               :config (setq web-mode-markup-indent-offset 2)
+               :mode (("\\.html\\'" . web-mode)
+                      ("\\.ejs\\'" . web-mode)
+                      ("\\.tpl\\'" . web-mode))
+               :ensure t)
+#+END_SRC
+
+** Vue
+#+BEGIN_SRC emacs-lisp
+  (use-package prettier-js
+               :ensure t)
+  (use-package vue-mode
+               :ensure t)
+  (use-package lsp-mode
+               :init
+               (setq lsp-auto-guess-root t)  ;; if you have projectile ...
+               :ensure t)
+  (use-package lsp-vue
+               :config
+               (progn
+                (add-hook 'vue-mode-hook #'lsp-vue-mmm-enable)
+                (with-eval-after-load 'lsp-mode
+                  (require 'lsp-flycheck)))
+               :ensure t)
+#+END_SRC
+
+
+* Rust
+** rust-mode
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-rust
              :ensure t)
-(use-package js2-mode
-             :mode ("\\.js\\'" . js2-mode)
-             :config
-             (progn
-              (add-hook 'js-mode-hook 'js2-minor-mode)
-              (add-hook 'js2-mode-hook 'ac-js2-mode))
+(use-package lsp-ui
              :ensure t)
-(use-package json-mode
-             :mode "\\.json\\'"
-             :config (setq js-indent-level 4)
+(use-package racer
              :ensure t)
-(use-package less-css-mode
-             :mode "\\.less\\'"
-             :ensure t)
-(use-package web-mode
-             :config (setq web-mode-markup-indent-offset 2)
-             :mode (("\\.html\\'" . web-mode)
-                    ("\\.ejs\\'" . web-mode)
-                    ("\\.tpl\\'" . web-mode))
-             :ensure t)
+(use-package rust-mode
+  :ensure-system-package
+  ((rustfmt . "rustup component add rustfmt-preview")
+   (racer . "cargo install racer")
+   (rls . "rustup component add rls-preview rust-analysis rust-src"))
+  :config
+  (setq rust-indent-method-chain t)
+
+  (add-hook 'rust-mode-hook #'lsp-rust-enable)
+
+  ;; format rust buffers using rustfmt(if it is installed)
+  (add-hook 'rust-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook
+                        (lambda ()
+                          (time-stamp)
+                          (lsp-format-buffer)) nil t)))
+  :ensure t)
+
+(with-eval-after-load 'rust-mode
+  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
+
+#+END_SRC
+
+** Cargo mode
+#+BEGIN_SRC emacs-lisp
+(use-package cargo
+  :after rust-mode
+  :hook ((rust-mode . cargo-minor-mode))
+  :ensure t)
 #+END_SRC
 
 
@@ -256,7 +526,13 @@ of files with duplicate names
 (use-package yaml-mode
              :mode (("\\.yml\\'" . yaml-mode)
                     ("\\.yaml\\'" . yaml-mode))
+             :config
+             (progn
+               (add-hook 'yaml-mode-hook
+                         '(lambda ()
+                         (modify-syntax-entry ?' "\'"))))
              :ensure t)
+
 #+END_SRC
 
 ** Asciidoc
@@ -304,9 +580,34 @@ of files with duplicate names
 * Docker and Dockerfile modes
 #+BEGIN_SRC emacs-lisp
 (use-package docker
-             :ensure t)
+  :bind ("C-c d" . docker)
+  :ensure t)
 (use-package dockerfile-mode
              :mode "Dockerfile.*\\'"
              :ensure t)
+#+END_SRC
+
+
+* Using a shell within emacs
+** Shell pop to pop up an ansi term shell at the bottom of the screen
+#+BEGIN_SRC emacs-lisp
+(use-package shell-pop
+             :config
+             (custom-set-variables
+              '(shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+              '(shell-pop-term-shell "/bin/bash")
+              '(shell-pop-universal-key "C-`")
+              '(shell-pop-window-size 50)
+              '(shell-pop-full-span t)
+              '(shell-pop-window-position "bottom"))
+             :ensure t)
+#+END_SRC
+
+** Disable line highlighting stuff in a terminal
+#+BEGIN_SRC emacs-lisp
+(add-hook 'eshell-mode-hook (lambda ()(setq-local global-hl-line-mode nil)))
+(add-hook 'eshell-mode-hook (lambda ()(setq-local show-trailing-whitespace nil)))
+(add-hook 'term-mode-hook (lambda ()(setq-local global-hl-line-mode nil)))
+(add-hook 'term-mode-hook (lambda ()(setq-local show-trailing-whitespace nil)))
 #+END_SRC
 
