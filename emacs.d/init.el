@@ -31,23 +31,12 @@
 (load-file (expand-file-name "config/navigation.el" user-emacs-directory))
 (load-file (expand-file-name "config/magit.el" user-emacs-directory))
 (load-file (expand-file-name "config/project.el" user-emacs-directory))
-(load-file (expand-file-name "config/code.el" user-emacs-directory))
 (load-file (expand-file-name "config/lsp-mode.el" user-emacs-directory))
+(load-file (expand-file-name "config/code.el" user-emacs-directory))
+(load-file (expand-file-name "config/slime.el" user-emacs-directory))
 (load-file (expand-file-name "config/peg-mode.el" user-emacs-directory))
+(load-file (expand-file-name "config/jira.el" user-emacs-directory))
+
+(set-frame-parameter nil 'unsplittable t)
 
 ;;; end init.el
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(base16-theme writeroom-mode company-box flx counsel-projectile rg molokai-theme kooten-theme noctilux-theme boron-theme apropospriate-theme abyss-theme nyx-theme cyberpunk-theme cyberpunk-2019-theme dockerfile-mode php-mode projectile markup-faces adoc-mode peg yaml-mode groovy-mode browse-at-remote magit ag multiple-cursors find-file-in-repository counsel powerline dracula-theme use-package-ensure-system-package diminish)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(font-lock-comment-face ((t (:slant italic))))
- '(font-lock-keyword-face ((t (:slant italic)))))

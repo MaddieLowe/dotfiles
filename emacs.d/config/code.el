@@ -15,13 +15,8 @@
   :diminish company-mode
   :ensure t)
 
-;;; Sometimes I need to force 2 spaces... like in vue files which uses mmm-temp-buffers
-(defun typescript-tab-setup ()
-  (when (string= "typescript-mode" major-mode)
-    (setq typescript-indent-level (if (string= "mmm-temp-buffer" (buffer-name)) 2 4))))
-
 ;;; Programming modes
-(use-package typescript-mode :init (add-hook 'typescript-mode-hook #'lsp) :ensure t)
+(use-package typescript :init (add-hook 'typescript-mode-hook #'lsp) :ensure t)
 (use-package js2-mode :init (add-hook 'js2-mode-hook #'lsp) :ensure t)
 (use-package less-css-mode :init (add-hook 'less-css-mode-hook #'lsp) :ensure t)
 (use-package web-mode :init (add-hook 'web-mode-hook #'lsp)
@@ -31,9 +26,14 @@
 (use-package vue-mode
   :init
   (add-hook 'vue-mode-hook #'lsp)
-  (add-hook 'after-change-major-mode-hook 'typescript-tab-setup)
   :config
   (setq mmm-submode-decoration-level 0)
+  (setq mmm-js-mode-enter-hook (lambda () (setq syntax-ppss-table nil)))
+  (setq mmm-typescript-mode-enter-hook (lambda ()
+                                         (setq syntax-ppss-table nil)
+                                         (make-local-variable 'typescript-indent-level)
+                                         (setq typescript-indent-level 2)))
+
   (add-to-list 'vue-modes '(:type template :name nil :mode web-mode))
   (add-to-list 'vue-modes '(:type template :name html :mode web-mode))
   :ensure t)
